@@ -45,7 +45,6 @@ class TestFlow(TestCase):
         self.assertFalse(flow_instance.is_empty(0, 0))
         self.assertTrue(flow_instance.is_empty(0, 1))
 
-
 if __name__ == '__main__':
     unittest.makeSuite(TestFlow).run()
 

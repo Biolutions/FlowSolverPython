@@ -4,7 +4,7 @@ from copy import deepcopy
 class Flow:
     """
     :type _end_points: dict[str, list[(int, int)]]
-    :type _board: list[list[str]]
+    :type board: list[list[str]]
     """
     _end_points = {}
 
@@ -12,7 +12,7 @@ class Flow:
         """
         :type board: list [list[str]]
         """
-        self._board = board
+        self.board = board
         self.find_end_points()
 
     def find_end_points(self):
@@ -21,9 +21,9 @@ class Flow:
         case value.
         :return: None
         """
-        for row in range(0, len(self._board)):
-            for col in range(0, len(self._board[row])):
-                value = self._board[row][col]
+        for row in range(0, len(self.board)):
+            for col in range(0, len(self.board[row])):
+                value = self.board[row][col]
 
                 # If the value is upper case and already in the dictionary. Append it's coordinate
                 if value.isupper() and value in self._end_points:
@@ -35,7 +35,7 @@ class Flow:
                     self._end_points[value] = [(row, col)]
 
     def get_board_copy(self):
-        return deepcopy(self._board)
+        return deepcopy(self.board)
 
     def is_valid(self, row, col):
         """
@@ -44,7 +44,7 @@ class Flow:
         :type row: int
         :rtype: bool
         """
-        if row < 0 or col < 0 or row >= len(self._board) or col >= len(self._board[0]):
+        if row < 0 or col < 0 or row >= len(self.board) or col >= len(self.board[0]):
             return False
         return True
 
@@ -56,7 +56,7 @@ class Flow:
         :rtype: bool
         """
 
-        if self.is_valid(row, col) and self._board[row][col] == '0':
+        if self.is_valid(row, col) and self.board[row][col] == '0':
             return True
 
         return False
@@ -64,8 +64,8 @@ class Flow:
 
     def __str__(self):
         ret_str = "Board \n"
-        for row in range(0, len(self._board)):
-            for col in range(0, len(self._board[row])):
-                ret_str += self._board[row][col].rjust(3, ' ')
+        for row in range(0, len(self.board)):
+            for col in range(0, len(self.board[row])):
+                ret_str += self.board[row][col].rjust(3, ' ')
             ret_str += '\n'
         return ret_str
