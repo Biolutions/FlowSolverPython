@@ -3,7 +3,10 @@ from copy import deepcopy
 
 class Flow:
     """
-    :type _end_points: dict[str, list[(int, int)]]
+    Object that models the game "Flow" Contains methods needed for determining if points exist in the board. And
+    modifying/ storing paths on the board.
+
+    :type _end_points: dict[str, Path]
     :type board: list[list[str]]
     """
     _end_points = {}
@@ -17,11 +20,13 @@ class Flow:
 
     def find_end_points(self):
         """
-        Looks at the _board attribute to find all of the end points that are in the game. End points are any all upper
+        Looks at the board attribute to find all of the end points that are in the game. End points are any all upper
         case value.
         :return: None
         """
         for row in range(0, len(self.board)):
+            end_points_finder = {}
+
             for col in range(0, len(self.board[row])):
                 value = self.board[row][col]
 
@@ -61,6 +66,21 @@ class Flow:
 
         return False
 
+    def adjacent_points(self, point1, point2):
+        """
+        Determines if 2 points are adjacent to one another in the given board.
+        Returns false if either point is invalid.
+        :rtype: bool
+        """
+        row1 = point1[0]
+        col1 = point1[1]
+        row2 = point2[0]
+        col2 = point2[1]
+        if not self.is_valid(row1, col1) or not self.is_valid(row2, col2):
+            return False
+        if abs((row1 - row2) + (col1 - col2)) == 1:
+            return True
+        return False
 
     def __str__(self):
         ret_str = "Board \n"
@@ -69,3 +89,96 @@ class Flow:
                 ret_str += self.board[row][col].rjust(3, ' ')
             ret_str += '\n'
         return ret_str
+
+
+class Path:
+    """
+    :type path_from1: list[(int, int)]
+    :type path_from2: list[(int, int)]
+    :type color: str
+    :type flow_game: Flow
+    """
+    def __init__(self, color, end_point1, end_point2, flow_game):
+        """
+        :type color: str
+        :type end_point1: (int, int)
+        :type end_point2: (int, int)
+        :type flow_game: Flow
+        :type: None
+        """
+        self.color = color
+        self.path_from1 = [end_point1]
+        self.path_from2 = [end_point2]
+        self.flow_game = flow_game
+
+    def complete(self):
+        """
+        Determines if the path is complete by comparing the last element in the two path lists.
+        If they are the same or adjacent to one another then the path is complete.
+        :rtype: bool
+        """
+        rout1_end = self.path_from1[-1]
+        rout2_end = self.path_from2[-1]
+        if rout1_end == rout2_end:
+            return True
+
+        if self.flow_game.adjacent_points(rout1_end, rout2_end):
+            return True
+        return False
+
+    def get_complete_path(self):
+        """
+        Returns a list of tuples that represents the complete path. If the path is not complete returns "not complete".
+        :rtype: list[(int, int)]
+        """
+        if not self.complete():
+            return "Not complete"
+
+        complete_path = []
+        for point in self.path_from1:
+            if point not in self.path_from2:
+                complete_path.append(point)
+        for point in self.path_from2:
+            if point not in self.path_from1:
+                complete_path.append(point)
+
+    def can_be_added_to_path(self, point, route_num = 0):
+        """
+        Determines if a point is adjacent to the last point in the specified path.
+        Path 0 is both paths, path 1 for end point 1, path 2 for end point 2.
+        If no path is specified it sees if the point can be added to either path.
+        If the path is already complete (connected) then it return false
+
+        :type point: (int, int)
+        :type route_num: int
+        :rtype: bool
+        """
+
+        if self.complete():
+            return False
+        available_end1 = self.path_from1[-1]
+        available_end2 = self.path_from2[-2]
+        can_be_added = False
+
+        # Check the first path
+        if route_num == 0 or route_num == 1:
+            can_be_added = self.flow_game.adjacent_points(available_end1, point)
+        if route_num == 0 or route_num == 2:
+            can_be_added = self.flow_game.adjacent_points(available_end2, point)
+
+        return can_be_added
+
+    def add_to_path(self, point, route_num):
+        """
+        Adds the point to the specifed rout.
+
+        :param route_num: 0, add to both / either path. 1 add to path 1, 2 add to path 2
+        """
+        # Attempt to add to path 1
+        if route_num == 0 or route_num == 1:
+            if self.can_be_added_to_path(point, 1):
+                self.path_from1.append(point)
+        # Attempt to add to path 2
+        if route_num == 0 or route_num == 2:
+            if self.can_be_added_to_path(point, 2):
+                self.path_from2.append(point)

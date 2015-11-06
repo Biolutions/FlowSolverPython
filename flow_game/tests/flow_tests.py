@@ -1,5 +1,5 @@
 from unittest import TestCase
-from flow_game.flow_board import Flow
+from flow_game.flow_board import Flow, Path
 import flow_game.utilities as utilities
 import unittest
 
@@ -7,7 +7,13 @@ __author__ = 'nick'
 
 TEST_PATH = "../../TestBoards/"
 
+
 class TestFlow(TestCase):
+    def setUp(self):
+        self.simple_board = [['R', 'O', '0'],
+                             ['0', '0', '0'],
+                             ['R', '0', 'O']]
+
     def test_get_board_copy(self):
         test_board = [['0', 'R', '0'],
                       ['R', '0', '0']]
@@ -45,6 +51,22 @@ class TestFlow(TestCase):
         self.assertFalse(flow_instance.is_empty(0, 0))
         self.assertTrue(flow_instance.is_empty(0, 1))
 
-if __name__ == '__main__':
-    unittest.makeSuite(TestFlow).run()
+    def test_adjacent_points(self):
+        test_game = Flow(self.simple_board)
+        self.assertTrue(test_game.adjacent_points((1, 0), (2, 0)))
+        self.assertTrue(test_game.adjacent_points((2, 0), (1, 0)))
 
+        self.assertFalse(test_game.adjacent_points((0, 3), (0, 2)))
+        self.assertFalse(test_game.adjacent_points((0, 0), (1, 1)))
+
+
+class TestPath(TestCase):
+    def setUp(self):
+        self.simple_board = [['R', 'O', '0'],
+                             ['0', '0', '0'],
+                             ['R', '0', 'O']]
+
+
+if __name__ == '__main__':
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestFlow)
+    unittest.TextTestRunner(verbosity=2).run(suite)

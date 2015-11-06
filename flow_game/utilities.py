@@ -33,6 +33,7 @@ def equal_boards(board1, board2):
                 return False
     return True
 
+
 def convert_to_xy(board):
     """
     Takes in a board that is in the form [row][col] ([y][x]) and converts it to the form
