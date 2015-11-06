@@ -6,10 +6,9 @@ class Flow:
     Object that models the game "Flow" Contains methods needed for determining if points exist in the board. And
     modifying/ storing paths on the board.
 
-    :type _end_points: dict[str, Path]
+    :type paths: dict[str, Path]
     :type board: list[list[str]]
     """
-    _end_points = {}
 
     def __init__(self, board):
         """
@@ -31,13 +30,21 @@ class Flow:
                 value = self.board[row][col]
 
                 # If the value is upper case and already in the dictionary. Append it's coordinate
-                if value.isupper() and value in self._end_points:
-                    self._end_points[value].append((row, col))
+                if value.isupper() and value in end_points_finder:
+                    end_points_finder[value].append((row, col))
 
                 # If the value is upper case and not already in the dictionary.
                 # Add it with a new list containing the coordinate
-                elif value.isupper() and value not in self._end_points:
-                    self._end_points[value] = [(row, col)]
+                elif value.isupper() and value not in end_points_finder:
+                    end_points_finder[value] = [(row, col)]
+
+            # Use the gather information to create Path Classes
+            for color in end_points_finder:
+                end_point1 = end_points_finder[color][0]
+                end_point2 = end_points_finder[color][1]
+                self.path[color] = Path(color, end_point1, end_point2)
+
+
 
     def get_board_copy(self):
         return deepcopy(self.board)
