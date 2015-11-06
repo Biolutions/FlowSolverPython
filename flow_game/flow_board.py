@@ -9,6 +9,8 @@ class Flow:
     :type paths: dict[str, Path]
     :type board: list[list[str]]
     """
+    paths = {}
+    board = []
 
     def __init__(self, board):
         """
@@ -16,6 +18,7 @@ class Flow:
         """
         self.board = board
         self.find_end_points()
+        self.paths = {}
 
     def find_end_points(self):
         """
@@ -38,13 +41,12 @@ class Flow:
                 elif value.isupper() and value not in end_points_finder:
                     end_points_finder[value] = [(row, col)]
 
-            # Use the gather information to create Path Classes
-            for color in end_points_finder:
-                end_point1 = end_points_finder[color][0]
-                end_point2 = end_points_finder[color][1]
-                self.path[color] = Path(color, end_point1, end_point2)
-
-
+        # Use the gather information to create Path Classes
+        for color in end_points_finder:
+            end_point1 = end_points_finder[color][0]
+            print color, end_points_finder[color]
+            end_point2 = end_points_finder[color][1]
+            self.paths[color] = Path(color, end_point1, end_point2, self)
 
     def get_board_copy(self):
         return deepcopy(self.board)
@@ -105,6 +107,10 @@ class Path:
     :type color: str
     :type flow_game: Flow
     """
+    path_from1 = []
+    path_from2 = []
+    color = ""
+
     def __init__(self, color, end_point1, end_point2, flow_game):
         """
         :type color: str
@@ -118,7 +124,7 @@ class Path:
         self.path_from2 = [end_point2]
         self.flow_game = flow_game
 
-    def complete(self):
+    def is_complete(self):
         """
         Determines if the path is complete by comparing the last element in the two path lists.
         If they are the same or adjacent to one another then the path is complete.
@@ -138,7 +144,7 @@ class Path:
         Returns a list of tuples that represents the complete path. If the path is not complete returns "not complete".
         :rtype: list[(int, int)]
         """
-        if not self.complete():
+        if not self.is_complete():
             return "Not complete"
 
         complete_path = []
@@ -161,7 +167,7 @@ class Path:
         :rtype: bool
         """
 
-        if self.complete():
+        if self.is_complete():
             return False
         available_end1 = self.path_from1[-1]
         available_end2 = self.path_from2[-2]

@@ -31,12 +31,15 @@ class TestFlow(TestCase):
                         "Change made to the returned board should not effect the new copy")
 
     def test_find_end_points(self):
-        testFlow = utilities.load_game(TEST_PATH + "easy5x5.txt")
-        self.assertTrue((0, 0) in testFlow._end_points['R'],
-                        "There is a R end point at position 0, 0 (row, col) in easy5x5.txt")
+        test_flow = Flow(self.simple_board)
+        red_path = Flow.paths['R']
+        orange_path = Flow.paths['O']
 
-        self.assertTrue((3, 3) in testFlow._end_points['Y'],
-                        "There is a Y end point at position 3, 3 (row, col) in easy5x5.txt")
+        self.assertTrue((0, 0) in red_path,
+                        "There is a R end point at position 0, 0 in simple board")
+
+        self.assertTrue((0, 2) in orange_path,
+                        "There is a Y end point at 0,2 in simple board")
 
     def test_is_valid(self):
         flow_instance = utilities.load_game(TEST_PATH + "easy5x5.txt")
@@ -62,9 +65,10 @@ class TestFlow(TestCase):
 
 class TestPath(TestCase):
     def setUp(self):
-        self.simple_board = [['R', 'O', '0'],
+        simple_board = [['R', 'O', '0'],
                              ['0', '0', '0'],
                              ['R', '0', 'O']]
+        self.simple_board = Flow(simple_board)
 
 
 if __name__ == '__main__':
