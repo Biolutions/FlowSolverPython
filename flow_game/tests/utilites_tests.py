@@ -1,5 +1,6 @@
 import unittest
 from flow_game import utilities
+from flow_game import flow_board
 
 TEST_PATH = "../../TestBoards/"
 
@@ -23,8 +24,19 @@ class TestFlowUtilities(unittest.TestCase):
         loaded_game = utilities.load_game(TEST_PATH + "easy5x5.txt")
         self.assertTrue(utilities.equal_boards(loaded_game.get_board_copy(), expected_board))
 
+    def test_at_goal(self):
+        test_board = [['0', 'R', '0'],
+                      ['R', '0', '0']]
+
+        flow_game = flow_board.Flow(test_board)
+        self.assertFalse(utilities.at_goal(flow_game))
+        flow_game.paths['R'].add_to_path((0, 0))
+        self.assertTrue(utilities.at_goal(flow_game))
+
+
 if __name__ == '__main__':
-    unittest.makeSuite(TestFlowUtilities).run()
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestFlowUtilities)
+    unittest.TextTestRunner(verbosity=2).run(suite)
 
 
 

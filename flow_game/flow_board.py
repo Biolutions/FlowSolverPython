@@ -181,7 +181,7 @@ class Path:
 
         return can_be_added
 
-    def add_to_path(self, point, route_num):
+    def add_to_path(self, point, route_num=0):
         """
         Adds the point to the specified route.
 

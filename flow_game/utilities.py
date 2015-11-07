@@ -49,3 +49,16 @@ def convert_to_xy(board):
         xy_board.append(x_vals)
     return xy_board
 
+
+def at_goal(board):
+    """
+    Determines if the board is in the goal state.
+
+    :type board: Flow
+    :rtype: bool
+    """
+    done = True
+    for path in board.paths.values():
+        done = done and path.is_complete()
+    return done
+
