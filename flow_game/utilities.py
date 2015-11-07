@@ -33,6 +33,7 @@ def equal_boards(board1, board2):
                 return False
     return True
 
+
 def convert_to_xy(board):
     """
     Takes in a board that is in the form [row][col] ([y][x]) and converts it to the form
@@ -47,4 +48,17 @@ def convert_to_xy(board):
             x_vals.append(board[x][y])
         xy_board.append(x_vals)
     return xy_board
+
+
+def at_goal(board):
+    """
+    Determines if the board is in the goal state.
+
+    :type board: Flow
+    :rtype: bool
+    """
+    done = True
+    for path in board.paths.values():
+        done = done and path.is_complete()
+    return done
 
