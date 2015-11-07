@@ -196,3 +196,10 @@ class Path:
         if route_num == 0 or route_num == 2:
             if self.can_be_added_to_path(point, 2):
                 self.path_from2.append(point)
+
+    def get_grow_points(self):
+        """
+        Returns the two points that can be grown from.
+        :rtype: ((int, int), (int, int))
+        """
+        return self.path_from1[-1], self.path_from2[-2]

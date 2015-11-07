@@ -49,6 +49,17 @@ def convert_to_xy(board):
         xy_board.append(x_vals)
     return xy_board
 
+def get_adjacent_points(point):
+    """
+    Returns a list of the 4 points that are adjacent to the given point. These points may or may not exist on board.
+
+    :type point: (int, int)
+    :return: list[(int, int)]
+    """
+    row = point[0]
+    col = point[1]
+    return [(row +1, col), (row - 1, col), (row, col + 1), (row, col - 1)]
+
 
 def at_goal(board):
     """
