@@ -28,13 +28,18 @@ class BFS:
         """
         self.queue.append(initial_game_state)
 
+        solution_games =[]
+        continue_generating = True
         # For loop to go through queue
         for game in self.queue:
             if utils.at_goal(game):
+                solution_games.append(game)
+                continue_generating = False
                 return game
-            self.generate_possible_moves_rr(game)
-            self.queue.remove(game)
-        return None
+            if continue_generating:
+                self.generate_possible_moves_rr(game)
+                self.queue.remove(game)
+        return solution_games
 
     def generate_possible_moves_rr(self, game):
         """
@@ -48,8 +53,8 @@ class BFS:
         for color in game.paths:
             # TODO clean up expression
             path = game.paths[color]
-            if path.is_complete():
-                continue
+            # if path.is_complete():
+            #     continue
 
             # Get grow points and points adjacent to them
             gp1, gp2 = path.get_grow_points()
@@ -140,12 +145,13 @@ if __name__ == '__main__':
     start_time = time.time()
     solution = BFS().solve_rr(first_flow)
     end_time = time.time()
-    print solution
-    print "Time:", end_time - start_time
+    for game in solution:
+        print game
+    # print "Time:", end_time - start_time
 
     start_time = time.time()
     solution2 = BFS().solve_single_gp(first_flow)
     end_time = time.time()
-    print "Time:", end_time - start_time
+    # print "Time:", end_time - start_time
     print solution2
 
