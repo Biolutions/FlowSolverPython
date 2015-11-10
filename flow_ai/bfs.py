@@ -28,18 +28,13 @@ class BFS:
         """
         self.queue.append(initial_game_state)
 
-        solution_games =[]
-        continue_generating = True
         # For loop to go through queue
-        for game in self.queue:
+        while len(self.queue) > 0:
+            game = self.queue.pop(0)
             if utils.at_goal(game):
-                solution_games.append(game)
-                continue_generating = False
                 return game
-            if continue_generating:
-                self.generate_possible_moves_rr(game)
-                self.queue.remove(game)
-        return solution_games
+            self.generate_possible_moves_rr(game)
+        return None
 
     def generate_possible_moves_rr(self, game):
         """
@@ -89,11 +84,11 @@ class BFS:
         self.queue.append(initial_game)
 
         # For loop to go through queue
-        for game in self.queue:
+        while len(self.queue) > 0:
+            game = self.queue.pop(0)
             if utils.at_goal(game):
                 return game
-            self.generate_possible_moves_rr(game)
-            self.queue.remove(game)
+            self.generate_possible_moves_single_gp(game)
         return None
 
     def generate_possible_moves_single_gp(self, game):
@@ -102,20 +97,23 @@ class BFS:
         allowed to make a move.
         :type game: Flow
         """
-
         for color in game.paths:
             path = game.paths[color]
             if path.is_complete():
                 continue
             gp1, gp2 = path.get_grow_points()
             adj2gp1 = utils.get_adjacent_points(gp1)
-
             for possible in adj2gp1:
+                # print "Attempting"
+                # print game
+                # print possible, path.can_be_added_to_path(possible, 1)
                 if path.can_be_added_to_path(possible, 1):
                     copy_game = deepcopy(game)
                     """:type: Flow"""
                     copy_game.paths[color].add_to_path(possible, 1)
                     self.queue.append(copy_game)
+                    # print "after attempt"
+                    # print copy_game
 
 if __name__ == '__main__':
     # simple_board = [['R', 'Y', '0'],
@@ -145,13 +143,12 @@ if __name__ == '__main__':
     start_time = time.time()
     solution = BFS().solve_rr(first_flow)
     end_time = time.time()
-    for game in solution:
-        print game
-    # print "Time:", end_time - start_time
+    print solution
+    print "Time:", end_time - start_time
 
     start_time = time.time()
     solution2 = BFS().solve_single_gp(first_flow)
     end_time = time.time()
-    # print "Time:", end_time - start_time
+    print "Time:", end_time - start_time
     print solution2
 
