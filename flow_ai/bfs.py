@@ -72,12 +72,32 @@ class BFS:
 
 
 if __name__ == '__main__':
-    simple_board = [['R', 'Y', '0'],
-                    ['0', '0', '0'],
-                    ['R', '0', 'Y']]
+    # simple_board = [['R', 'Y', '0'],
+    #                 ['0', '0', '0'],
+    #                 ['R', '0', 'Y']]
+    #
+    # simple_flow = Flow(simple_board)
+    # print BFS().round_robin_solve(simple_flow)
+    #
+    # medium_flow = [['R', 'Y', '0'],
+    #                ['0', '0', '0'],
+    #                ['G', '0', '0'],
+    #                ['0', 'R', '0'],
+    #                ['0', 'G', 'Y']]
+    # medium_flow = Flow(medium_flow)
+    # print BFS().round_robin_solve(medium_flow)
 
-    simple_flow = Flow(simple_board)
+    first_board = [['R', '0', 'G', '0', '0'],
+                   ['0', '0', 'B', '0', '0'],
+                   ['0', '0', '0', '0', '0'],
+                   ['0', 'G', '0', '0', '0'],
+                   ['0', 'R', 'B', '0', '0']]
+    first_flow = Flow(first_board)
+    solution = BFS().round_robin_solve(first_flow)
+    print solution
+    print utils.at_goal(solution)
+    for path in solution.paths.values():
+        """:type:Flow """
+        print path.get_complete_path(), path.is_complete()
+        print path.color, path.path_from1, path.path_from2
 
-    print BFS().round_robin_solve(simple_flow)
-
-    print BFS().solve("../TestBoards/easy5x5.txt")

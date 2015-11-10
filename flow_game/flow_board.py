@@ -86,7 +86,7 @@ class Flow:
         col2 = point2[1]
         if not self.is_valid(row1, col1) or not self.is_valid(row2, col2):
             return False
-        if abs((row1 - row2) + (col1 - col2)) == 1:
+        if (abs(row1 - row2) + abs(col1 - col2)) == 1:
             return True
         return False
 
