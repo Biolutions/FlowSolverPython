@@ -1,6 +1,7 @@
 from flow_game.flow_board import Flow, Path
 import flow_game.utilities as utils
 from copy import deepcopy
+import time
 
 
 class BFS:
@@ -13,10 +14,12 @@ class BFS:
 
     def solve_file(self, filename, method="RR"):
         start = utils.load_game(filename)
-        if method.lower() == "RR"
-            return self.solve(start, method)
+        if method.lower() == "RR":
+            return self.solve_rr(start)
+        else:
+            return self.solve_single_gp(start)
 
-    def solve(self, initial_game_state, method=generate_possible_moves_single_gp):
+    def solve_rr(self, initial_game_state):
         """
         Creates the stack to be searched in a round robin manner - Each color gets to select 1 move until the solution
         is found.
@@ -29,7 +32,7 @@ class BFS:
         for game in self.queue:
             if utils.at_goal(game):
                 return game
-            self.method(game)
+            self.generate_possible_moves_rr(game)
             self.queue.remove(game)
         return None
 
@@ -71,6 +74,23 @@ class BFS:
         # Add games to queue
         self.queue += gp1_games + gp2_games
 
+    def solve_single_gp(self, initial_game):
+        """
+        Creates the stack to be searched in a round robin manner - Each color gets to select 1 move until the solution
+        is found.
+        :type initial_game_state: Flow
+        :return: Flow
+        """
+        self.queue.append(initial_game)
+
+        # For loop to go through queue
+        for game in self.queue:
+            if utils.at_goal(game):
+                return game
+            self.generate_possible_moves_rr(game)
+            self.queue.remove(game)
+        return None
+
     def generate_possible_moves_single_gp(self, game):
         """
         Takes in a game and upates the queue. New game states are added is if only 1 growth point for each color is
@@ -98,7 +118,8 @@ if __name__ == '__main__':
     #                 ['R', '0', 'Y']]
     #
     # simple_flow = Flow(simple_board)
-    # print BFS().solve(simple_flow)
+    # print BFS().solve_rr(simple_flow)
+    # print BFS().solve_single_gp(simple_flow)
     #
     # medium_flow = [['R', 'Y', '0'],
     #                ['0', '0', '0'],
@@ -106,7 +127,8 @@ if __name__ == '__main__':
     #                ['0', 'R', '0'],
     #                ['0', 'G', 'Y']]
     # medium_flow = Flow(medium_flow)
-    # print BFS().solve(medium_flow)
+    # print BFS().solve_rr(medium_flow)
+    # print BFS().solve_single_gp(medium_flow)
 
     first_board = [['R', '0', 'G', '0', '0'],
                    ['0', '0', 'B', '0', '0'],
@@ -114,11 +136,16 @@ if __name__ == '__main__':
                    ['0', 'G', '0', '0', '0'],
                    ['0', 'R', 'B', '0', '0']]
     first_flow = Flow(first_board)
-    solution = BFS().solve(first_flow)
+
+    start_time = time.time()
+    solution = BFS().solve_rr(first_flow)
+    end_time = time.time()
     print solution
-    print utils.at_goal(solution)
-    for path in solution.paths.values():
-        """:type:Flow """
-        print path.get_complete_path(), path.is_complete()
-        print path.color, path.path_from1, path.path_from2
+    print "Time:", end_time - start_time
+
+    start_time = time.time()
+    solution2 = BFS().solve_single_gp(first_flow)
+    end_time = time.time()
+    print "Time:", end_time - start_time
+    print solution2
 
