@@ -11,11 +11,12 @@ class BFS:
     def __init__(self):
         self.queue = []
 
-    def solve(self, filename):
+    def solve_file(self, filename, method="RR"):
         start = utils.load_game(filename)
-        return self.round_robin_solve(start)
+        if method.lower() == "RR"
+            return self.solve(start, method)
 
-    def round_robin_solve(self, initial_game_state):
+    def solve(self, initial_game_state, method=generate_possible_moves_single_gp):
         """
         Creates the stack to be searched in a round robin manner - Each color gets to select 1 move until the solution
         is found.
@@ -28,7 +29,7 @@ class BFS:
         for game in self.queue:
             if utils.at_goal(game):
                 return game
-            self.generate_possible_moves_rr(game)
+            self.method(game)
             self.queue.remove(game)
         return None
 
@@ -70,6 +71,26 @@ class BFS:
         # Add games to queue
         self.queue += gp1_games + gp2_games
 
+    def generate_possible_moves_single_gp(self, game):
+        """
+        Takes in a game and upates the queue. New game states are added is if only 1 growth point for each color is
+        allowed to make a move.
+        :type game: Flow
+        """
+
+        for color in game.paths:
+            path = game.paths[color]
+            if path.is_complete():
+                continue
+            gp1, gp2 = path.get_grow_points()
+            adj2gp1 = utils.get_adjacent_points(gp1)
+
+            for possible in adj2gp1:
+                if path.can_be_added_to_path(possible, 1):
+                    copy_game = deepcopy(game)
+                    """:type: Flow"""
+                    copy_game.paths[color].add_to_path(possible, 1)
+                    self.queue.append(copy_game)
 
 if __name__ == '__main__':
     # simple_board = [['R', 'Y', '0'],
@@ -77,7 +98,7 @@ if __name__ == '__main__':
     #                 ['R', '0', 'Y']]
     #
     # simple_flow = Flow(simple_board)
-    # print BFS().round_robin_solve(simple_flow)
+    # print BFS().solve(simple_flow)
     #
     # medium_flow = [['R', 'Y', '0'],
     #                ['0', '0', '0'],
@@ -85,7 +106,7 @@ if __name__ == '__main__':
     #                ['0', 'R', '0'],
     #                ['0', 'G', 'Y']]
     # medium_flow = Flow(medium_flow)
-    # print BFS().round_robin_solve(medium_flow)
+    # print BFS().solve(medium_flow)
 
     first_board = [['R', '0', 'G', '0', '0'],
                    ['0', '0', 'B', '0', '0'],
@@ -93,7 +114,7 @@ if __name__ == '__main__':
                    ['0', 'G', '0', '0', '0'],
                    ['0', 'R', 'B', '0', '0']]
     first_flow = Flow(first_board)
-    solution = BFS().round_robin_solve(first_flow)
+    solution = BFS().solve(first_flow)
     print solution
     print utils.at_goal(solution)
     for path in solution.paths.values():
