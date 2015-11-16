@@ -33,7 +33,6 @@ class TestFlowUtilities(unittest.TestCase):
         flow_game.paths['R'].add_to_path((0, 0))
         self.assertTrue(utilities.at_goal(flow_game))
 
-
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFlowUtilities)
     unittest.TextTestRunner(verbosity=2).run(suite)

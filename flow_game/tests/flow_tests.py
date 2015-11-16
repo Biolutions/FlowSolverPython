@@ -1,6 +1,7 @@
 from unittest import TestCase
-from flow_game.flow_board import Flow, Path
-import flow_game.utilities as utilities
+from flow_game.flow_board import Flow
+import flow_game.utilities as utils
+import copy
 import unittest
 
 __author__ = 'nick'
@@ -20,14 +21,14 @@ class TestFlow(TestCase):
 
         flow = Flow(test_board)
         original_board = flow.get_board_copy()
-        self.assertTrue(utilities.equal_boards(test_board, original_board),
+        self.assertTrue(utils.equal_boards(test_board, original_board),
                         "Returned board should be the same as the test board")
 
         original_board[0][0] = 'T'
-        self.assertFalse(utilities.equal_boards(test_board, original_board),
+        self.assertFalse(utils.equal_boards(test_board, original_board),
                          "Change made to the returned board. Test board should not be the same as it")
 
-        self.assertTrue(utilities.equal_boards(test_board, flow.get_board_copy()),
+        self.assertTrue(utils.equal_boards(test_board, flow.get_board_copy()),
                         "Change made to the returned board should not effect the new copy")
 
     def test_find_end_points(self):
@@ -44,14 +45,14 @@ class TestFlow(TestCase):
                         "There is a O end point at 2,2 in simple board")
 
     def test_is_valid(self):
-        flow_instance = utilities.load_game(TEST_PATH + "easy5x5.txt")
+        flow_instance = utils.load_game(TEST_PATH + "easy5x5.txt")
 
         self.assertFalse(flow_instance.is_valid(-1, 0), "Negative row value test")
         self.assertFalse(flow_instance.is_valid(0, 5), "5x5 grid only has values up to index 4. (0,5) is invalid")
         self.assertTrue(flow_instance.is_valid(4, 4), "(4, 4) last valid position in 5x5 Grid")
 
     def test_is_empty(self):
-        flow_instance = utilities.load_game(TEST_PATH + "easy5x5.txt")
+        flow_instance = utils.load_game(TEST_PATH + "easy5x5.txt")
 
         self.assertFalse(flow_instance.is_empty(0, 0))
         self.assertTrue(flow_instance.is_empty(0, 1))
@@ -63,6 +64,16 @@ class TestFlow(TestCase):
 
         self.assertFalse(test_game.adjacent_points((0, 3), (0, 2)))
         self.assertFalse(test_game.adjacent_points((0, 0), (1, 1)))
+
+    def test_equals(self):
+        game1 = Flow(self.simple_board)
+        game2 = Flow(self.simple_board)
+        self.assertTrue(game1 == game2)
+        changed_board = copy.deepcopy(self.simple_board)
+        changed_board[1][0] = 'r'
+        game2 = Flow(changed_board)
+        self.assertFalse(game1 == game2)
+
 
 
 class TestPath(TestCase):
