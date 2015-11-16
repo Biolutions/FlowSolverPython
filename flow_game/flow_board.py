@@ -29,7 +29,7 @@ class Flow:
             return False
 
         for row in range(0, len(board1)):
-            for col in range(0, len(board2)):
+            for col in range(0, len(board2[row])):
                 if board1[row][col] != board2[row][col]:
                     return False
         return True
