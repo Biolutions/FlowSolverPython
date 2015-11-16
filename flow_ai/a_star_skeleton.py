@@ -18,7 +18,7 @@ class AbstractAStar:
         self.frontier.append((0, initial_flow))
         while len(self.frontier) > 0:
             chosen_node = self.get_next_to_explore()
-            print chosen_node[0], chosen_node[1]
+            # print chosen_node[0], chosen_node[1]
             if utils.at_goal(chosen_node[1]):
                 return chosen_node
             else:
@@ -42,9 +42,9 @@ class AbstractAStar:
         """
         new_states = utils.generate_possible_moves_single_gp(node[1])
         for new_state in new_states:
-            if new_state not in [node[1] for node in self.frontier]:
+            if new_state not in [new_node[1] for new_node in self.frontier]:
                 # New cost is the cost of the heuristic, plus the cost of the parent node, plus 1.
-                cost = self.heuristic(new_state) + node[0] + 1
+                cost = (self.heuristic(new_state) + node[0] + 1)
                 self.frontier.append((cost, new_state))
 
     def heuristic(self, flow_game):

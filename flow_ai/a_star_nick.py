@@ -13,13 +13,16 @@ class AStarNick(AbstractAStar):
         hcost = 0
         # Iterate over the paths. Count the cost to complete each path
         # TODO Write more pythonic
+        # print "EVAL"
         for path in flow_game.paths.values():
             if not path.is_complete():
                 gp1, gp2 = path.get_grow_points()
                 row1, col1 = gp1[0], gp1[1]
                 row2, col2 = gp2[0], gp2[1]
-                hcost += abs(row1 - row2) + abs(row2 + col2) - 1
-        return hcost
+                cost_to_complete = abs(row1 - row2) + abs(col1 - col2) - 1
+                # print path.color, gp1, gp2, abs(row1 -row2), abs(col1 - col2), cost_to_complete
+                hcost += cost_to_complete
+        return hcost -1
 
 if __name__ == '__main__':
     # simple_board = [['R', 'Y', '0'],
@@ -36,11 +39,11 @@ if __name__ == '__main__':
                    ['0', 'G', 'Y']]
     medium_flow = Flow(medium_flow)
     print AStarNick().solve(medium_flow)[1]
-    #
-    # first_board = [['R', '0', 'G', '0', 'Y'],
-    #                ['0', '0', 'B', '0', 'M'],
-    #                ['0', '0', '0', '0', '0'],
-    #                ['0', 'G', '0', 'Y', '0'],
-    #                ['0', 'R', 'B', 'M', '0']]
-    # first_flow = Flow(first_board)
-    # print AStarNick().solve(first_flow)[1]
+
+    first_board = [['R', '0', 'G', '0', 'Y'],
+                   ['0', '0', 'B', '0', 'M'],
+                   ['0', '0', '0', '0', '0'],
+                   ['0', 'G', '0', 'Y', '0'],
+                   ['0', 'R', 'B', 'M', '0']]
+    first_flow = Flow(first_board)
+    print AStarNick().solve(first_flow)[1]
