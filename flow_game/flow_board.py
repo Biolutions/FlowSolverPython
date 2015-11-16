@@ -20,6 +20,23 @@ class Flow:
         self.paths = {}
         self.find_end_points()
 
+    def __eq__(self, other):
+        if not isinstance(other, Flow):
+            raise ValueError("Argument was not Flow object! Cannot compare to another Flow!")
+        board1 = self.board
+        board2 = other.board
+        if len(board1) != len(board2) or len(board1[0]) != len(board2[0]):
+            return False
+
+        for row in range(0, len(board1)):
+            for col in range(0, len(board2)):
+                if board1[row][col] != board2[row][col]:
+                    return False
+        return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def find_end_points(self):
         """
         Looks at the board attribute to find all of the end points that are in the game. End points are any all upper
