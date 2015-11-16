@@ -98,6 +98,12 @@ class Flow:
             ret_str += '\n'
         return ret_str
 
+    def get_unfinished_paths(self):
+        unfinished = []
+        for path in self.paths.values():
+            if not path.is_complete():
+                unfinished.append(path)
+        return unfinished
 
 class Path:
     """
@@ -167,7 +173,9 @@ class Path:
         """
 
         if self.is_complete():
-
+            return False
+        # TODO: Write unit test
+        if not self.flow_game.is_empty(point[0], point[1]):
             return False
         available_end1 = self.path_from1[-1]
         available_end2 = self.path_from2[-1]
@@ -187,12 +195,26 @@ class Path:
 
         :param route_num: 0, add to both / either path. 1 add to path 1, 2 add to path 2
         """
+        # TODO: write unit test
+        was_added = False
 
         # Attempt to add to path 1
         if route_num == 0 or route_num == 1:
             if self.can_be_added_to_path(point, 1):
                 self.path_from1.append(point)
+                was_added = True
         # Attempt to add to path 2
         if route_num == 0 or route_num == 2:
             if self.can_be_added_to_path(point, 2):
                 self.path_from2.append(point)
+                was_added = True
+
+        if was_added:
+            self.flow_game.board[point[0]][point[1]] = self.color.lower()
+
+    def get_grow_points(self):
+        """
+        Returns the two points that can be grown from.
+        :rtype: ((int, int), (int, int))
+        """
+        return self.path_from1[-1], self.path_from2[-1]
