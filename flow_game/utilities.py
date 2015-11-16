@@ -144,15 +144,15 @@ def is_unique(flow_list, flow_game):
     return True
 
 
-def at_goal(board):
+def at_goal(flow_game):
     """
     Determines if the board is in the goal state.
 
-    :type board: Flow
+    :type flow_game: Flow
     :rtype: bool
     """
     done = True
-    for path in board.paths.values():
+    for path in flow_game.paths.values():
         done = done and path.is_complete()
     return done
 

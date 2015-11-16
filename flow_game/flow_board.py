@@ -27,9 +27,8 @@ class Flow:
         board2 = other.board
         if len(board1) != len(board2) or len(board1[0]) != len(board2[0]):
             return False
-
         for row in range(0, len(board1)):
-            for col in range(0, len(board2)):
+            for col in range(0, len(board2[row])):
                 if board1[row][col] != board2[row][col]:
                     return False
         return True
