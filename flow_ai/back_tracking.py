@@ -34,7 +34,8 @@ class BackTrackSolver:
             return True, flow_game
 
         possible_states = utils.generate_possible_moves_single_gp(flow_game)
-        for state in possible_states:
+        while len(possible_states) > 0:
+            state = possible_states.pop(0)
             rv = self.solve_game_dumb(copy.deepcopy(state))
             if rv[0]:
                 return rv
