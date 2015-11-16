@@ -31,56 +31,26 @@ class astar:
                     cost += 1
         return cost
 
-    def generate_possible_moves_rr(self, game):
+    def solve(self, initial_game_state):
         """
-        Takes in a game and updates the queue. Games are added as if each grow point got a turn to pick a space.
-        Colors will alternate.
-
-        :type game: Flow
+        :type initial_game_state: Flow
+        :return Flow:
         """
-        gp1_games = []
-        gp2_games = []
-        for color in game.paths:
-            # TODO clean up expression
-            path = game.paths[color]
-            # if path.is_complete():=
-            #     continue
 
-            # Get grow points and points adjacent to them
-            gp1, gp2 = path.get_grow_points()
-            adj2gp1 = utils.get_adjacent_points(gp1)
-            adj2gp2 = utils.get_adjacent_points(gp2)
+        self.queue.put((astar().heuristic(initial_game_state), initial_game_state))
 
-            # Handle adding adjacent points to grow points separately - in order to maintain RR order.
-            for possible in adj2gp1:
-                if path.can_be_added_to_path(possible, 1):
-                    copy_game = deepcopy(game)
-                    """:type: Flow"""
-                    copy_game.paths[color].add_to_path(possible, 1)
-                    gp1_games.append(copy_game)
+        while self.queue._qsize() > 0:
+            pop = self.queue.get()
+            game = pop[1]
+            if utils.at_goal(game):
+                return game
+            possible_moves = utils.generate_possible_moves_single_gp(game)
+            for i, value in enumerate(possible_moves):
+                # print possible_moves[i]
+                self.queue.put((astar().heuristic(possible_moves[i]), possible_moves[i]))
+        return None
 
-            for possible in adj2gp2:
-                if path.can_be_added_to_path(possible, 1):
-                    copy_game = deepcopy(game)
-                    """:type: Flow"""
-                    copy_game.paths[color].add_to_path(possible, 2)
-                    gp2_games.append(copy_game)
-                    temp = Flow(copy_game)
-                    self.queue.put((astar.heuristic(temp), copy_game))
 
-        # Add games to queue
-
-        # self.queue.put((astar.heuristic(gp1_games), gp1_games))
-        # self.queuue.put((astar.heuristic(gp1_games), gp1_games))
-        # self.queue.put((astar.heuristic(gp2_games), gp2_games))
-
-    # def solve(self, initial_game_state):
-    #     """
-    #     :type initial_game_state: Flow
-    #     :return Flow:
-    #     """
-    #
-    #     self.queu.append(initial_game_state)
 
     def can_be_added_to_path(self, point, route_num=0):
         """
@@ -137,26 +107,6 @@ class astar:
         if was_added:
             self.flow_game.board[point[0]][point[1]] = self.color.lower()
 
-    def solve_rr(self, initial_game_state):
-        """
-        Creates the stack to be searched in a round robin manner - Each color gets to select 1 move until the solution
-        is found.
-        :type initial_game_state: Flow
-        :return: Flow
-        """
-        self.queue.put((astar().heuristic(initial_game_state), initial_game_state))
-        # print self.queue.get()
-
-        # For loop to go through queue
-        while self.queue.qsize() > 0:
-            pop = tuple()
-            pop = self.queue.get()
-            game = pop[1]
-            print 1
-            if utils.at_goal(game):
-                return game
-            self.generate_possible_moves_rr(game)
-        return None
 
 if __name__ == '__main__':
     first_board = [['R', '0', 'G', '0', '0'],
@@ -165,9 +115,21 @@ if __name__ == '__main__':
                    ['0', 'G', '0', '0', '0'],
                    ['0', 'R', 'B', '0', '0']]
 
-    first_flow = Flow(first_board)
+    medium_flow = [['R', 'Y', '0'],
+                   ['0', '0', '0'],
+                   ['G', '0', '0'],
+                   ['0', 'R', '0'],
+                   ['0', 'G', 'Y']]
+
+    simple_board = [['R', 'Y', '0'],
+                    ['0', '0', '0'],
+                    ['R', '0', 'Y']]
+
+    # first_flow = Flow(first_board)
+    # first_flow = Flow(simple_board)
+    first_flow = Flow(medium_flow)
     start_time = time.time()
-    solution = astar().solve_rr(first_flow)
+    solution = astar().solve(first_flow)
     end_time = time.time()
     print solution
     print "Time:", end_time - start_time
