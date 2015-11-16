@@ -72,7 +72,10 @@ class BFS:
                     gp2_games.append(copy_game)
 
         # Add games to queue
-        self.queue += gp1_games + gp2_games
+        new_states = gp1_games + gp2_games
+        for new_state in new_states:
+            if new_state not in self.queue:
+                self.queue.append(new_state)
 
     def solve_single_gp(self, initial_game):
         """
@@ -111,27 +114,34 @@ class BFS:
                     copy_game = deepcopy(game)
                     """:type: Flow"""
                     copy_game.paths[color].add_to_path(possible, 1)
-                    self.queue.append(copy_game)
+                    if copy_game not in self.queue:
+                        self.queue.append(copy_game)
                     # print "after attempt"
                     # print copy_game
 
 if __name__ == '__main__':
-    # simple_board = [['R', 'Y', '0'],
-    #                 ['0', '0', '0'],
-    #                 ['R', '0', 'Y']]
-    #
-    # simple_flow = Flow(simple_board)
-    # print BFS().solve_rr(simple_flow)
-    # print BFS().solve_single_gp(simple_flow)
-    #
-    # medium_flow = [['R', 'Y', '0'],
-    #                ['0', '0', '0'],
-    #                ['G', '0', '0'],
-    #                ['0', 'R', '0'],
-    #                ['0', 'G', 'Y']]
-    # medium_flow = Flow(medium_flow)
-    # print BFS().solve_rr(medium_flow)
-    # print BFS().solve_single_gp(medium_flow)
+    simple_board = [['R', 'Y', '0'],
+                    ['0', '0', '0'],
+                    ['R', '0', 'Y']]
+
+    simple_flow = Flow(simple_board)
+    print BFS().solve_rr(simple_flow)
+    print BFS().solve_single_gp(simple_flow)
+
+    medium_flow = [['R', 'Y', '0'],
+                   ['0', '0', '0'],
+                   ['G', '0', '0'],
+                   ['0', 'R', '0'],
+                   ['0', 'G', 'Y']]
+    medium_flow = Flow(medium_flow)
+    start_time = time.time()
+    print BFS().solve_rr(medium_flow)
+    end_time = time.time()
+    print "Time:", end_time - start_time
+    start_time = time.time()
+    print BFS().solve_single_gp(medium_flow)
+    end_time = time.time()
+    print "Time:", end_time - start_time
 
     first_board = [['R', '0', 'G', '0', '0'],
                    ['0', '0', 'B', '0', '0'],
@@ -140,15 +150,9 @@ if __name__ == '__main__':
                    ['0', 'R', 'B', '0', '0']]
     first_flow = Flow(first_board)
 
-    start_time = time.time()
     solution = BFS().solve_rr(first_flow)
-    end_time = time.time()
     print solution
-    print "Time:", end_time - start_time
 
-    start_time = time.time()
     solution2 = BFS().solve_single_gp(first_flow)
-    end_time = time.time()
-    print "Time:", end_time - start_time
     print solution2
 
