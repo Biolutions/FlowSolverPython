@@ -4,6 +4,7 @@ from copy import deepcopy
 from collections import deque
 import Queue as Q
 import time
+import sys
 
 
 class astar:
@@ -15,7 +16,10 @@ class astar:
         self.queue = Q.PriorityQueue()
 
     def heuristic(self, game):
+        F = Flow(game.board)
         """
+        Gives a cost to the board state by measuring how far between growth points
+        this also makes the cost max value when one path can't be moved
         :type game: Flow
         :return: double
         """
@@ -23,12 +27,23 @@ class astar:
         for color in game.paths:
             path = game.paths[color]
             if path.is_complete():
-                cost -= 1
+                cost -= 2
+                continue
+            gp1, gp2 = path.get_grow_points()
+            # print abs((gp1[0] - gp2[0]) + (gp1[1] - gp2[1])), gp1, gp2
+            cost += abs((gp1[0] - gp2[0]) + (gp1[1] - gp2[1]))
+            adjecent_points = utils.get_adjacent_points(gp1)
+            if not F.is_valid(adjecent_points[0][0], adjecent_points[0][1]):
+                if not F.is_valid(adjecent_points[1][0], adjecent_points[1][1]):
+                    if not F.is_valid(adjecent_points[2][0], adjecent_points[2][1]):
+                        if not F.is_valid(adjecent_points[3][0], adjecent_points[3][1]):
+                            cost = sys.maxint
+                            return cost
         # print game.board[1][1]
-        for i, value in enumerate(game.board):
-            for j in enumerate(game.board[i]):
-                if j[1] == '0':
-                    cost += 1
+        # for i, value in enumerate(game.board):
+        #     for j in enumerate(game.board[i]):
+        #         if j[1] == '0':
+        #             cost += 1
         return cost
 
     def solve(self, initial_game_state):
@@ -38,16 +53,18 @@ class astar:
         """
 
         self.queue.put((astar().heuristic(initial_game_state), initial_game_state))
-
+        current_cost = 0
         while self.queue._qsize() > 0:
             pop = self.queue.get()
             game = pop[1]
+            current_cost += pop[0]
+            # print current_cost
             if utils.at_goal(game):
                 return game
             possible_moves = utils.generate_possible_moves_single_gp(game)
             for i, value in enumerate(possible_moves):
                 # print possible_moves[i]
-                self.queue.put((astar().heuristic(possible_moves[i]), possible_moves[i]))
+                self.queue.put((astar().heuristic(possible_moves[i]) + current_cost, possible_moves[i]))
         return None
 
 
@@ -125,9 +142,9 @@ if __name__ == '__main__':
                     ['0', '0', '0'],
                     ['R', '0', 'Y']]
 
-    # first_flow = Flow(first_board)
+    first_flow = Flow(first_board)
     # first_flow = Flow(simple_board)
-    first_flow = Flow(medium_flow)
+    # first_flow = Flow(medium_flow)
     start_time = time.time()
     solution = astar().solve(first_flow)
     end_time = time.time()
