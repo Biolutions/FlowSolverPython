@@ -116,22 +116,26 @@ class BFS:
                     # print copy_game
 
 if __name__ == '__main__':
-    # simple_board = [['R', 'Y', '0'],
-    #                 ['0', '0', '0'],
-    #                 ['R', '0', 'Y']]
-    #
-    # simple_flow = Flow(simple_board)
+    simple_board = [['R', 'Y', '0'],
+                    ['0', '0', '0'],
+                    ['R', '0', 'Y']]
+
+    simple_flow = Flow(simple_board)
     # print BFS().solve_rr(simple_flow)
-    # print BFS().solve_single_gp(simple_flow)
-    #
-    # medium_flow = [['R', 'Y', '0'],
-    #                ['0', '0', '0'],
-    #                ['G', '0', '0'],
-    #                ['0', 'R', '0'],
-    #                ['0', 'G', 'Y']]
-    # medium_flow = Flow(medium_flow)
+    start = time.time()
+    print BFS().solve_single_gp(simple_flow)
+    print "Simple board time:", str(time.time() - start)
+
+    medium_flow = [['R', 'Y', '0'],
+                   ['0', '0', '0'],
+                   ['G', '0', '0'],
+                   ['0', 'R', '0'],
+                   ['0', 'G', 'Y']]
+    medium_flow = Flow(medium_flow)
     # print BFS().solve_rr(medium_flow)
-    # print BFS().solve_single_gp(medium_flow)
+    start = time.time()
+    print BFS().solve_single_gp(medium_flow)
+    print "Medium flow time:", str(time.time() - start)
 
     first_board = [['R', '0', 'G', '0', '0'],
                    ['0', '0', 'B', '0', '0'],
