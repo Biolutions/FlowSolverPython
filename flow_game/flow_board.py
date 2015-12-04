@@ -228,6 +228,12 @@ class Path:
         if was_added:
             self.flow_game.board[point[0]][point[1]] = self.color.lower()
 
+    def remove_last_point(self, route_num=1):
+        last_point = self.path_from1.pop(len(self.path_from1) - 1)
+        self.flow_game.board[last_point[0]][last_point[1]] = '0'
+        return last_point
+
+
     def get_grow_points(self):
         """
         Returns the two points that can be grown from.

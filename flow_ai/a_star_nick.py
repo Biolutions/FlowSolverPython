@@ -26,24 +26,24 @@ class AStarNick(AbstractAStar):
         return hcost -1
 
 if __name__ == '__main__':
-    simple_board = [['R', 'Y', '0'],
-                ['0', '0', '0'],
-                ['R', '0', 'Y']]
-
-    simple_flow = Flow(simple_board)
-    start = time.time()
-    print AStarNick().solve(simple_flow)[1]
-    print "Simple time: ", str(time.time() - start)
-
-    medium_flow = [['R', 'Y', '0'],
-                   ['0', '0', '0'],
-                   ['G', '0', '0'],
-                   ['0', 'R', '0'],
-                   ['0', 'G', 'Y']]
-    medium_flow = Flow(medium_flow)
-    start = time.time()
-    print AStarNick().solve(medium_flow)[1]
-    print "Medium time:", str(time.time() - start)
+    # simple_board = [['R', 'Y', '0'],
+    #             ['0', '0', '0'],
+    #             ['R', '0', 'Y']]
+    #
+    # simple_flow = Flow(simple_board)
+    # start = time.time()
+    # print AStarNick().solve(simple_flow)[1]
+    # print "Simple time: ", str(time.time() - start)
+    #
+    # medium_flow = [['R', 'Y', '0'],
+    #                ['0', '0', '0'],
+    #                ['G', '0', '0'],
+    #                ['0', 'R', '0'],
+    #                ['0', 'G', 'Y']]
+    # medium_flow = Flow(medium_flow)
+    # start = time.time()
+    # print AStarNick().solve(medium_flow)[1]
+    # print "Medium time:", str(time.time() - start)
 
     first_board = [['R', '0', 'G', '0', 'Y'],
                    ['0', '0', 'B', '0', 'M'],
@@ -51,4 +51,6 @@ if __name__ == '__main__':
                    ['0', 'G', '0', 'Y', '0'],
                    ['0', 'R', 'B', 'M', '0']]
     first_flow = Flow(first_board)
+    start = time.time()
     print AStarNick().solve(first_flow)[1]
+    print "First board time:", str(time.time() - start)
