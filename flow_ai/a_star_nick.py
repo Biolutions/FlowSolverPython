@@ -1,5 +1,6 @@
 from flow_game.flow_board import Flow
 from a_star_skeleton import AbstractAStar
+import time
 
 
 class AStarNick(AbstractAStar):
@@ -25,12 +26,14 @@ class AStarNick(AbstractAStar):
         return hcost -1
 
 if __name__ == '__main__':
-    # simple_board = [['R', 'Y', '0'],
-    #             ['0', '0', '0'],
-    #             ['R', '0', 'Y']]
-    #
-    # simple_flow = Flow(simple_board)
-    # print AStarNick().solve(simple_flow)[1]
+    simple_board = [['R', 'Y', '0'],
+                ['0', '0', '0'],
+                ['R', '0', 'Y']]
+
+    simple_flow = Flow(simple_board)
+    start = time.time()
+    print AStarNick().solve(simple_flow)[1]
+    print "Simple time: ", str(time.time() - start)
 
     medium_flow = [['R', 'Y', '0'],
                    ['0', '0', '0'],
@@ -38,7 +41,9 @@ if __name__ == '__main__':
                    ['0', 'R', '0'],
                    ['0', 'G', 'Y']]
     medium_flow = Flow(medium_flow)
+    start = time.time()
     print AStarNick().solve(medium_flow)[1]
+    print "Medium time:", str(time.time() - start)
 
     first_board = [['R', '0', 'G', '0', 'Y'],
                    ['0', '0', 'B', '0', 'M'],
