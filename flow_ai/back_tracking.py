@@ -1,4 +1,4 @@
-from flow_game.flow_board import Flow
+from flow_game.flow_board import Flow, Path
 import flow_game.utilities as utils
 import copy, time
 
@@ -56,13 +56,36 @@ class BackTrackSolver:
                 return False, None
         return False, None
 
-        # possible_states = utils.generate_possible_moves_single_gp(flow_game)
-        # while len(possible_states) > 0:
-        #     state = possible_states.pop(0)
-        #     rv = self.solve_game_dumb(copy.deepcopy(state))
-        #     if rv[0]:
-        #         return rv
-        # return False, None
+    # possible_states = utils.generate_possible_moves_single_gp(flow_game)
+    # while len(possible_states) > 0:
+    #     state = possible_states.pop(0)
+    #     rv = self.solve_game_dumb(copy.deepcopy(state))
+    #     if rv[0]:
+    #         return rv
+    # return False, None
+
+class backTrackingPath:
+
+    def __init__(self, flow_path):
+        """
+        :type flow_path: Path
+        """
+        self.flow_path = flow_path
+        self.restart_points = []
+
+
+    def generate_path(self):
+        """
+        :return:
+        """
+
+    def finish_path(self, propsed_path):
+        """
+        :type
+
+        :return:
+        """
+
 
 if __name__ == '__main__':
     # simple_board = [['R', 'Y', '0'],
