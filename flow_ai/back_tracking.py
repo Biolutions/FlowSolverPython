@@ -98,6 +98,7 @@ class BackTrackingPath:
                 # print "Restart path", len(restart_path.path_from1), restart_path.flow_game
                 self.generate_new_paths(restart_path)
                 if len(self.paths_queue) > 0:
+                    self.paths_queue.sort(key=lambda path: len(path.path_from1))
                     return self.paths_queue.pop(0)
             return None
 
@@ -108,7 +109,7 @@ class BackTrackingPath:
         :return: None
         """
         if path.is_complete():
-            self.paths_queue.append(copy.deepcopy(path))
+            self.paths_queue.append(path)
             # print "Adding path, num paths", len(self.paths_queue), path.flow_game
 
         gp1, gp2 = path.get_grow_points()
