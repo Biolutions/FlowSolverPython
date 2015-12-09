@@ -144,37 +144,37 @@ class BackTrackingPath:
         return False, None
 
 if __name__ == '__main__':
-    # simple_board = [['R', 'Y', '0'],
-    #                 ['0', '0', '0'],
-    #                 ['R', '0', 'Y']]
-    #
-    # simple_flow = Flow(simple_board)
-    # start = time.time()
-    # print BackTrackSolver().solve(simple_flow)
-    # print "Back Track simple:", str(time.time() - start)
+    simple_board = [['R', 'Y', '0'],
+                    ['0', '0', '0'],
+                    ['R', '0', 'Y']]
 
-    # medium_flow = [['R', 'Y', '0'],
-    #                ['0', '0', '0'],
-    #                ['G', '0', '0'],
-    #                ['0', 'R', '0'],
-    #                ['0', 'G', 'Y']]
-    # medium_flow = Flow(medium_flow)
+    simple_flow = Flow(simple_board)
+    start = time.time()
+    print BackTrackSolver().solve(simple_flow)
+    print "Back Track simple:", str(time.time() - start)
+
+    medium_flow = [['R', 'Y', '0'],
+                   ['0', '0', '0'],
+                   ['G', '0', '0'],
+                   ['0', 'R', '0'],
+                   ['0', 'G', 'Y']]
+    medium_flow = Flow(medium_flow)
 
 
-    # start = time.time()
-    # print BackTrackSolver().solve(medium_flow)
-    # print "Back Track medium:", str(time.time() - start)
-    #
+    start = time.time()
+    print BackTrackSolver().solve(medium_flow)
+    print "Back Track medium:", str(time.time() - start)
 
-    # first_board = [['R', '0', 'G', '0', 'Y'],
-    #                ['0', '0', 'B', '0', 'M'],
-    #                ['0', '0', '0', '0', '0'],
-    #                ['0', 'G', '0', 'Y', '0'],
-    #                ['0', 'R', 'B', 'M', '0']]
-    # first_flow = Flow(first_board)
-    # start = time.time()
-    # print BackTrackSolver().solve(first_flow)
-    # print "Back Track first:", str(time.time() - start)
+
+    first_board = [['R', '0', 'G', '0', 'Y'],
+                   ['0', '0', 'B', '0', 'M'],
+                   ['0', '0', '0', '0', '0'],
+                   ['0', 'G', '0', 'Y', '0'],
+                   ['0', 'R', 'B', 'M', '0']]
+    first_flow = Flow(first_board)
+    start = time.time()
+    print BackTrackSolver().solve(first_flow)
+    print "Back Track first:", str(time.time() - start)
 
 
     hard_board =[['0', '0', '0', '0', '0', '0', 'B'],
