@@ -34,9 +34,9 @@ class BackTrackSolver:
         if utils.at_goal(flow_game):
             return True, flow_game
 
+        sorted_colors = self.order_colors(flow_game)
         # For each color that is not complete
-        for color in flow_game.paths:
-            color_path = flow_game.paths[color]
+        for color_path in sorted_colors:
             if color_path.is_complete():
                 continue
             # Complete its path
@@ -45,13 +45,28 @@ class BackTrackSolver:
             # While there are still backtracking options
             while completed_path is not None:
                 game_copy = copy.deepcopy(completed_path.flow_game)
-                print game_copy
                 rv = self.solve_game_dumb(game_copy)
                 if rv[0]:
                     return rv
                 completed_path = bt_path.get_next_path()
             return False, None
 
+    def order_colors(self, flow_game):
+        """
+        :type flow_game: Flow
+        :return: Path
+        """
+        distances = []
+        for color in flow_game.paths:
+            path = flow_game.paths[color]
+            if path.is_complete():
+                continue
+            else:
+                sp1 = path.path_from1[0]
+                sp2 = path.path_from2[0]
+                distances.append((abs(sp1[0] - sp2[0]) + abs(sp1[1] - sp2[0]), path))
+        distances.sort(key=lambda x: x[0])
+        return [y[1] for y in distances]
 
 class BackTrackingPath:
     """
