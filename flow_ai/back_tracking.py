@@ -34,49 +34,30 @@ class BackTrackSolver:
         if utils.at_goal(flow_game):
             return True, flow_game
 
+        # For each color that is not complete
         for color in flow_game.paths:
             color_path = flow_game.paths[color]
             if color_path.is_complete():
                 continue
-            btPath = BackTrackingPath(color_path)
-            completed_path = btPath.generate_new_path()
+            # Complete its path
+            bt_path = BackTrackingPath(color_path)
+            completed_path = bt_path.get_next_path()
+            # While there are still backtracking options
             while completed_path is not None:
                 game_copy = copy.deepcopy(completed_path.flow_game)
                 print game_copy
                 rv = self.solve_game_dumb(game_copy)
                 if rv[0]:
                     return rv
-                completed_path = btPath.generate_new_path()
+                completed_path = bt_path.get_next_path()
             return False, None
 
-        #     gp1, gp2 = color_path.get_grow_points()
-        #     adj_points = utils.get_adjacent_points(gp1)
-        #     path_updated = False
-        #     for possible_point in adj_points:
-        #         if color_path.can_be_added_to_path(possible_point, 1):
-        #             path_updated = True
-        #             game_copy = copy.deepcopy(flow_game)
-        #             """:type: Flow"""
-        #             game_copy.paths[color].add_to_path(possible_point, 1)
-        #             rv = self.solve_game_dumb(game_copy)
-        #             if rv[0]:
-        #                 return rv
-        #     # color could not be updated
-        #     if not path_updated:
-        #         return False, None
-        # return False, None
-
-    # possible_states = utils.generate_possible_moves_single_gp(flow_game)
-    # while len(possible_states) > 0:
-    #     state = possible_states.pop(0)
-    #     rv = self.solve_game_dumb(copy.deepcopy(state))
-    #     if rv[0]:
-    #         return rv
-    # return False, None
 
 class BackTrackingPath:
     """
     :type flow_path: Path
+    :type paths_queue: list[Path]
+    :type last_restart: Path
 
     """
 
@@ -84,57 +65,54 @@ class BackTrackingPath:
         """
         :type flow_path: Path
         """
-        self.flow_path = flow_path
-        self.first_path_used = True
         if not flow_path.is_complete():
-            self.flow_path = self.finish_path(self.flow_path)[1]
-            self.first_path_used = False
+            flow_path = self.finish_path(flow_path)[1]
 
-        if self.flow_path is not None:
-            self.restart_position = len(self.flow_path.path_from1)
-            self.restart_points = []
+        self.last_restart = copy.deepcopy(flow_path)
+        self.paths_queue = [flow_path]
+
+    def get_next_path(self):
+        if len(self.paths_queue) > 0:
+            return self.paths_queue.pop(0)
         else:
-            self.first_path_used = False
+            # While the last restart has more than just the origin
+            while len(self.last_restart.path_from1) > 1:
+                restart_path = self.last_restart
+                restart_path.remove_last_point(1)
+                self.last_restart = copy.deepcopy(restart_path)
+                # print "Restart path", len(restart_path.path_from1), restart_path.flow_game
+                self.generate_new_paths(restart_path)
+                if len(self.paths_queue) > 0:
+                    return self.paths_queue.pop(0)
+            return None
 
-    def generate_new_path(self):
-        if not self.first_path_used:
-            self.first_path_used = True
-            return self.flow_path
+    def generate_new_paths(self, path):
+        """
 
-        # print len(self.flow_path.path_from1), self.restart_position, self.restart_points
-        while self.restart_position > 1:
+        :type path: Path
+        :return: None
+        """
+        if path.is_complete():
+            self.paths_queue.append(copy.deepcopy(path))
+            # print "Adding path, num paths", len(self.paths_queue), path.flow_game
 
-            if len(self.restart_points) == 0:
-                self.restart_position -= 1
-                self.restart_points.append(self.flow_path.remove_last_point(1))
-
-            # print self.restart_points, self.restart_position
-            gp1, gp2 = self.flow_path.get_grow_points()
-            adj_points = utils.get_adjacent_points(gp1)
-            for point in adj_points:
-                if point in self.restart_points:
-                    continue
-                elif self.flow_path.can_be_added_to_path(point, 1):
-                    self.restart_points.append(point)
-                    copy_path = copy.deepcopy(self.flow_path)
-                    """:type: Path"""
-                    copy_path.add_to_path(point, 1)
-                    rv = self.finish_path(copy_path)
-                    if rv[0]:
-                        # print "RETURNING"
-                        return rv[1]
-            self.restart_points = []
-
-
-
+        gp1, gp2 = path.get_grow_points()
+        adj_points = utils.get_adjacent_points(gp1)
+        for point in adj_points:
+            if path.can_be_added_to_path(point):
+                copy_path = copy.deepcopy(path)
+                """:type:Path"""
+                copy_path.add_to_path(point)
+                self.generate_new_paths(copy_path)
 
     def finish_path(self, path):
         """
         :type path: Path
+        :type add_to_queue: bool
         :return:
         """
+
         if path.is_complete():
-            # print path.flow_game
             return True, path
 
         gp1, gp2 = path.get_grow_points()
@@ -167,11 +145,11 @@ if __name__ == '__main__':
     # medium_flow = Flow(medium_flow)
 
 
-    start = time.time()
+    # start = time.time()
     # print BackTrackSolver().solve(medium_flow)
     # print "Back Track medium:", str(time.time() - start)
     #
-    #
+
     # first_board = [['R', '0', 'G', '0', 'Y'],
     #                ['0', '0', 'B', '0', 'M'],
     #                ['0', '0', '0', '0', '0'],
@@ -191,16 +169,16 @@ if __name__ == '__main__':
                  ['0', '0', '0', '0', 'R', 'Y', '0'],
                  ['0', '0', '0', '0', '0', 'B', 'T']]
 
-    hard = Flow(hard_board)
-    bt = BackTrackingPath(hard.paths['B'])
-    rv = bt.generate_new_path()
-    while (rv is not None):
-        print rv.flow_game
-        rv = bt.generate_new_path()
+    # hard = Flow(hard_board)
+    # bt = BackTrackingPath(hard.paths['B'])
+    # rv = bt.get_next_path()
+    # while (rv is not None):
+    #     # print rv.flow_game
+    #     rv = bt.get_next_path()
 
-    # start = time.time()
-    # print BackTrackSolver().solve(Flow(hard_board))
-    # print "Back Track hard:", str(time.time() - start)
+    start = time.time()
+    print BackTrackSolver().solve(Flow(hard_board))
+    print "Back Track hard:", str(time.time() - start)
 
 
 
